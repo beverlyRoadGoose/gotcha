@@ -1,0 +1,70 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ⬇ Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.22.0'
+
+      - name: 🔨 Build
+        run: go build -v ./...
+  
+  lint:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+
+    defaults:
+      run:
+        working-directory: /
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ⬇ Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.21.0'
+
+      - name: 🔍 Lint
+        uses: golangci/golangci-lint-action@v6.1.0
+        with:
+          working-directory: /
+          args: --timeout=30m
+
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+
+    defaults:
+      run:
+        working-directory: /
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ⬇ Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.21.0'
+
+      - name: 🔨 Build
+        run: go build -v ./...
+
+      - name: 🧪 Test
+        run: go test ./... -coverprofile=coverage.txt -covermode=atomic
