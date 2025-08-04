@@ -1,0 +1,38 @@
+server:
+  host: testhost
+  port: 8080
+  allowedOrigins:
+    - http://localhost
+
+database:
+  name: testdb
+  host: dbhost
+  port: 5432
+  user: user
+  password: password
+  migrate: true
+  migrationsPath: migrations
+
+logger:
+  level: debug
+  format: text
+  setReportCaller: false
+  archiveLogs: true
+  archiveBufferSize: 5
+  archiveFrequencySeconds: 1
+
+tracing:
+  enabled: true
+  sampleRate: 1
+
+aws:
+  endpoint:
+  region: eu-central-1
+  bucket: test
+  accessKey: accesskey
+  secretKey: secretkey
+
+
+application:
+  version: test
+  environment: production
