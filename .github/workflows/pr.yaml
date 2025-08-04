@@ -15,7 +15,7 @@ jobs:
       - name: ⬇ Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.22.0'
+          go-version: '>=1.24.0'
 
       - name: 🔨 Build
         run: go build -v ./...
@@ -31,7 +31,7 @@ jobs:
       - name: ⬇ Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.21.0'
+          go-version: '>=1.24.0'
 
       - name: 🔍 Lint
         uses: golangci/golangci-lint-action@v6.1.0
@@ -49,7 +49,7 @@ jobs:
       - name: ⬇ Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.21.0'
+          go-version: '>=1.24.0'
 
       - name: 🔨 Build
         run: go build -v ./...
