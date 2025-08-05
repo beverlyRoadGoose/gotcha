@@ -60,14 +60,14 @@ func RespondWithError(statusCode int, w http.ResponseWriter, response interface{
 
 func HandlePanic(ctx context.Context, w http.ResponseWriter) []byte {
 	if r := recover(); r != nil {
-		stackBuf := make([]byte, 64*1024) // Buffer to hold the stack trace
+		stackTrace := make([]byte, 64*1024) // Buffer to hold the stack trace
 
 		RespondWithError(http.StatusInternalServerError, w, ErrorResponse{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "internal server error",
 		}, ContentTypeApplicationJson)
 
-		return stackBuf
+		return stackTrace
 	}
 
 	return nil
