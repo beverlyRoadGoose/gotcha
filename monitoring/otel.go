@@ -24,7 +24,7 @@ import (
 
 var meter = otel.Meter("tobi.ad/gotcha/monitoring")
 
-func InitialiseOtelMonitoring(ctx context.Context, config *config.Monitoring) (shutdown func(context.Context) error, err error) {
+func InitialiseOtelMonitoring(ctx context.Context, config config.Monitoring) (shutdown func(context.Context) error, err error) {
 	var shutdownFuncs []func(context.Context) error
 	// Shutdown calls cleanupBeforeShutdown functions registered via shutdownFuncs.
 	// The errors from the calls are joined.
