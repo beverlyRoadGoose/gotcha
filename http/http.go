@@ -58,7 +58,7 @@ func RespondWithError(statusCode int, w http.ResponseWriter, response interface{
 	_ = json.NewEncoder(w).Encode(response)
 }
 
-func HandlePanic(ctx context.Context, w http.ResponseWriter) []byte {
+func HandlePanic(ctx context.Context, w http.ResponseWriter) (any, []byte) {
 	if r := recover(); r != nil {
 		stackTrace := make([]byte, 64*1024) // Buffer to hold the stack trace
 
@@ -67,8 +67,8 @@ func HandlePanic(ctx context.Context, w http.ResponseWriter) []byte {
 			Message:    "internal server error",
 		}, ContentTypeApplicationJson)
 
-		return stackTrace
+		return r, stackTrace
 	}
 
-	return nil
+	return nil, nil
 }
