@@ -8,12 +8,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Server represents the server configuration with host, port, and allowed origins.
 type Server struct {
 	Host           string   `yaml:"host"`
 	Port           int      `yaml:"port"`
 	AllowedOrigins []string `yaml:"allowedOrigins"`
 }
 
+// Database represents the configuration details for a database connection, including credentials and migration options.
 type Database struct {
 	Name           string `yaml:"name"`
 	Host           string `yaml:"host"`
@@ -24,6 +26,13 @@ type Database struct {
 	MigrationsPath string `yaml:"migrationsPath"`
 }
 
+// Logging represents the logging configuration including level, format, caller reporting, and log archiving settings.
+// Level specifies the logging verbosity level (e.g., debug, info, warn, error).
+// Format defines the output format of logs (e.g., JSON, plain text).
+// SetReportCaller determines if log entries include the calling method or file information.
+// ArchiveLogs indicates whether logs should be archived.
+// ArchiveBufferSize is the size of the buffer for storing logs in memory before archiving.
+// ArchiveFrequencySeconds defines the interval in seconds between successive log archiving actions.
 type Logging struct {
 	Level                   string `yaml:"level"`
 	Format                  string `yaml:"format"`
@@ -33,11 +42,21 @@ type Logging struct {
 	ArchiveFrequencySeconds int    `yaml:"archiveFrequencySeconds"`
 }
 
+// Tracing represents the tracing configuration for distributed system monitoring and sampling settings.
+// Enabled specifies whether tracing is active.
+// SampleRate determines the fraction of requests to sample for tracing.
 type Tracing struct {
 	Enabled    bool    `yaml:"enabled"`
 	SampleRate float64 `yaml:"sampleRate"`
 }
 
+type Monitoring struct {
+	Tracing        Tracing `yaml:"tracing"`
+	LogsEnabled    bool    `yaml:"logsEnabled"`
+	MetricsEnabled bool    `yaml:"metricsEnabled"`
+}
+
+// AWS represents the configuration required to interact with AWS services, including credentials and resource details.
 type AWS struct {
 	Endpoint  string `yaml:"endpoint"`
 	Region    string `yaml:"region"`
@@ -46,11 +65,14 @@ type AWS struct {
 	SecretKey string `yaml:"secretKey"`
 }
 
+// Application represents the configuration details of the application, including its version and deployment environment.
 type Application struct {
 	Version     string `yaml:"version"`
 	Environment string `yaml:"environment"`
 }
 
+// Load retrieves configuration data from a file specified by the CONFIG_FILE environment variable and unmarshals it.
+// Returns an error if the environment variable is unset, the file cannot be read, or unmarshalling fails.
 func Load(config any) error {
 	path := os.Getenv("CONFIG_FILE")
 	if path == "" {
@@ -60,6 +82,8 @@ func Load(config any) error {
 	return loadConfig(path, config)
 }
 
+// LoadFromFile reads a configuration file from the specified path and unmarshals its content into the provided config.
+// Returns an error if the file cannot be read, the config is nil, or unmarshalling fails.
 func LoadFromFile(path string, config any) error {
 	return loadConfig(path, config)
 }
