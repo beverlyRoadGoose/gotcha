@@ -26,19 +26,17 @@ var meter = otel.Meter("tobi.ad/gotcha/monitoring")
 
 func InitialiseOtelMonitoring(ctx context.Context, config *config.Monitoring) (shutdown func(context.Context) error, err error) {
 	var shutdownFuncs []func(context.Context) error
-
 	// Shutdown calls cleanupBeforeShutdown functions registered via shutdownFuncs.
 	// The errors from the calls are joined.
 	// Each registered cleanupBeforeShutdown will be invoked once.
 	shutdown = func(ctx context.Context) error {
-		var err error
+		var shutdownErr error
 		for _, fn := range shutdownFuncs {
-			err = errors.Join(err, fn(ctx))
+			shutdownErr = errors.Join(shutdownErr, fn(ctx))
 		}
 		shutdownFuncs = nil
-		return err
+		return shutdownErr
 	}
-
 	// handleErr calls shutdown for cleanupBeforeShutdown and makes sure that all errors are returned.
 	handleErr := func(inErr error) {
 		err = errors.Join(inErr, shutdown(ctx))
@@ -57,7 +55,8 @@ func InitialiseOtelMonitoring(ctx context.Context, config *config.Monitoring) (s
 
 	if config.LogsEnabled {
 		// Set up a logger provider.
-		loggerProvider, err := newLoggerProvider(ctx)
+		var loggerProvider *log.LoggerProvider
+		loggerProvider, err = newLoggerProvider(ctx)
 		if err != nil {
 			handleErr(err)
 			return
@@ -68,14 +67,15 @@ func InitialiseOtelMonitoring(ctx context.Context, config *config.Monitoring) (s
 
 	if config.MetricsEnabled {
 		// Set up meter provider.
-		meterProvider, err := newMeterProvider(ctx)
+		var meterProvider *metric.MeterProvider
+		meterProvider, err = newMeterProvider(ctx)
 		if err != nil {
 			handleErr(err)
 			return
 		}
+
 		shutdownFuncs = append(shutdownFuncs, meterProvider.Shutdown)
 		otel.SetMeterProvider(meterProvider)
-
 		// enable the runtime metrics
 		err = runtime.Start(runtime.WithMinimumReadMemStatsInterval(time.Second))
 		if err != nil {
