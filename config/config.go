@@ -17,13 +17,18 @@ type Server struct {
 
 // Database represents the configuration details for a database connection, including credentials and migration options.
 type Database struct {
-	Name           string `yaml:"name"`
-	Host           string `yaml:"host"`
-	Port           int    `yaml:"port"`
-	User           string `yaml:"user"`
-	Password       string `yaml:"password"`
-	Migrate        bool   `yaml:"migrate"`
-	MigrationsPath string `yaml:"migrationsPath"`
+	Name     string `yaml:"name"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+}
+
+// DatabaseMigration represents the configuration details for database migrations, including database connection details and migration path.
+type DatabaseMigration struct {
+	Database `yaml:",inline"`
+	Enabled  bool   `yaml:"enabled"`
+	Path     string `yaml:"path"`
 }
 
 // Logging represents the logging configuration including level, format, caller reporting, and log archiving settings.
