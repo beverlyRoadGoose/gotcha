@@ -26,9 +26,9 @@ type Database struct {
 
 // DatabaseMigration represents the configuration details for database migrations, including database connection details and migration path.
 type DatabaseMigration struct {
-	Database `yaml:",inline"`
 	Enabled  bool   `yaml:"enabled"`
 	Path     string `yaml:"path"`
+	Database `yaml:",inline"`
 }
 
 // Logging represents the logging configuration including level, format, caller reporting, and log archiving settings.
