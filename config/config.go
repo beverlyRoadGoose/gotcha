@@ -61,8 +61,8 @@ type AWS struct {
 	Endpoint  string `yaml:"endpoint"`
 	Region    string `yaml:"region"`
 	Bucket    string `yaml:"bucket"`
-	AccessKey string `yaml:"accessKey"`
-	SecretKey string `yaml:"secretKey"`
+	AccessKey string `yaml:"accessKeyId"`
+	SecretKey string `yaml:"secretAccessKey"`
 }
 
 // Application represents the configuration details of the application, including its version and deployment environment.
