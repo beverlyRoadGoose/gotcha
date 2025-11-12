@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"net"
 	"net/http"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -71,4 +73,31 @@ func HandlePanic(ctx context.Context, w http.ResponseWriter) (any, []byte) {
 	}
 
 	return nil, nil
+}
+
+func GetClientIP(r *http.Request) string {
+	// Check common headers for the real client IP when behind proxies
+	ip := r.Header.Get("X-Forwarded-For")
+	if ip == "" {
+		ip = r.Header.Get("X-Real-IP")
+	}
+
+	// If both headers are empty, use the direct remote address
+	if ip == "" {
+		ip, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
+
+	// If X-Forwarded-For contains multiple IPs, take the first one
+	if ip != "" {
+		ips := net.ParseIP(ip)
+		if ips == nil {
+			// Split in case it's a comma-separated list
+			ipList := strings.Split(ip, ",")
+			if len(ipList) > 0 {
+				ip = strings.TrimSpace(ipList[0])
+			}
+		}
+	}
+
+	return ip
 }
